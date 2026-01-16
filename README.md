@@ -1,27 +1,27 @@
-# ShelfSpaceAllocation
+# Planogram-magaza-urun-yonetimi
 ![](docs/src/figures/planogram.svg)
 
 [![Docs Image](https://img.shields.io/badge/docs-latest-blue.svg)](https://gamma-opt.github.io/ShelfSpaceAllocation.jl/dev/)
 ![Runtests](https://github.com/gamma-opt/ShelfSpaceAllocation.jl/workflows/Runtests/badge.svg)
 
-This package contains an optimization model for solving the *shelf space allocation problem (SSAP)* in the context of retail stores, formulated as *mixed-integer linear program (MILP)*. We intended the package for both developing and running the model. It includes the model, visualization capabilities, input/output related functions, and example instances. The documentation covers how to use the package, its functionalities, and the model in detail.
+Bu paket, perakende mağazaları bağlamında *raf alanı dağıtım problemini (SSAP)* çözmek için geliştirilmiş bir optimizasyon modeli içerir ve *karma tamsayı doğrusal programlama (MILP)* olarak formüle edilmiştir. Paketi hem modeli geliştirmek hem de çalıştırmak için tasarladık. Model, görselleştirme yetenekleri, girdi/çıktı ile ilgili fonksiyonlar ve örnek senaryoları içerir. Dokümantasyon, paketin nasıl kullanılacağını, işlevlerini ve modeli ayrıntılı olarak kapsamaktadır.
 
-This package is a part of a research project at the Systems Analysis Laboratory at Aalto University, authored by *Fabricio Oliveira* and *Jaan Tollander de Balsch*.
+Bu paket, Aalto Üniversitesi Sistem Analizi Laboratuvarı'ndaki bir araştırma projesinin parçasıdır ve *Fabricio Oliveira* ile *Jaan Tollander de Balsch* tarafından hazırlanmıştır.
 
 
-## Examples
-|Attribute|Small|Medium|Large|
+## Örnekler
+|Özellik|Küçük|Orta|Büyük|
 |---------|-----|-------|------|
-|Products |118  |221    |193   |
-|Shelves  |7    |7      |10    |
-|Blocks   |7    |9      |23    |
-|Modules  |1    |1      |2     |
+|Ürünler  |118  |221    |193   |
+|Raflar   |7    |7      |10    |
+|Bloklar  |7    |9      |23    |
+|Modüller |1    |1      |2     |
 
-There are three example cases available: `small`, `medium` and `large` with sizes described in the table above. The example script below shows how to solve these instances with `ShelfSpaceAllocation.jl` using the Gurobi optimizer.
+Yukarıdaki tabloda boyutları açıklanan `küçük`, `orta` ve `büyük` olmak üzere üç örnek durum mevcuttur. Aşağıdaki örnek betik, `PlanogramMagazaUrunYonetimi.jl` ve Gurobi optimizasyonu kullanılarak bu örneklerin nasıl çözüleceğini göstermektedir.
 
 ```julia
 using Dates, JuMP, Gurobi
-using ShelfSpaceAllocation
+using PlanogramMagazaUrunYonetimi
 
 case = "small"
 output_dir = "examples/output/$case/$(string(Dates.now()))"
@@ -47,7 +47,7 @@ variables = Variables(model)
 objectives = Objectives(model)
 ```
 
-Saving values to JSON.
+Değerlerin JSON olarak kaydedilmesi.
 ```julia
 save_json(specs, joinpath(output_dir, "specs.json"))
 save_json(parameters, joinpath(output_dir, "parameters.json"))
@@ -55,7 +55,7 @@ save_json(variables, joinpath(output_dir, "variables.json"))
 save_json(objectives, joinpath(output_dir, "objectives.json"))
 ```
 
-Loading values from JSON.
+Değerlerin JSON'dan yüklenmesi.
 ```julia
 specs = load_json(Specs, joinpath(output_dir, "specs.json"))
 parameters = load_json(Params, joinpath(output_dir, "parameters.json"))
@@ -63,49 +63,49 @@ variables = load_json(Variables, joinpath(output_dir, "variables.json"))
 objectives = load_json(Objectives, joinpath(output_dir, "objectives.json"))
 ```
 
-The [plotting](https://gamma-opt.github.io/ShelfSpaceAllocation.jl/plotting/) section of the documentation shows how to visualize the results.
+Dokümantasyonun [çizim](https://gamma-opt.github.io/ShelfSpaceAllocation.jl/plotting/) bölümü, sonuçların nasıl görselleştirileceğini göstermektedir.
 
-Example of *relax-and-fix* and *fix-and-optimize* heuristics is available in  [`heuristics.jl`](./examples/heuristics.jl) file.
+*Gevşet-ve-sabitle* ve *sabitle-ve-optimize et* sezgisel yöntemlerinin örneği [`heuristics.jl`](./examples/heuristics.jl) dosyasında mevcuttur.
 
-## Installation
-Install the [Julia language](https://julialang.org/) and then install this package.
+## Kurulum
+[Julia dilini](https://julialang.org/) kurun ve ardından bu paketi kurun.
 
 ```bash
-pkg> add https://github.com/gamma-opt/ShelfSpaceAllocation.jl
+pkg> add https://github.com/gamma-opt/PLANOGRAM.jl
 ```
 
-## Development
-Clone the repository
+## Geliştirme
+Depoyu klonlayın
 ```bash
-git clone https://github.com/gamma-opt/ShelfSpaceAllocation.jl
+git clone https://github.com/gamma-opt/PLANOGRAM.jl
 ```
 
-Install dependencies
+Bağımlılıkları kurun
 ```
 pkg> dev .
 ```
 
-Install solver such as Gurobi.
+Gurobi gibi bir çözücü kurun.
 
 
-## Installing Solver
-It's up to the user to choose a suitable solver for solving the JuMP model. For small instance GLPK is sufficient but for large instances, commercial solver such as Gurobi or CPLEX is recommended.
+## Çözücü Kurulumu
+JuMP modelini çözmek için uygun bir çözücü seçmek kullanıcıya kalmıştır. Küçük örnekler için GLPK yeterli olabilir, ancak büyük örnekler için Gurobi veya CPLEX gibi ticari bir çözücü önerilir.
 
-Gurobi is a powerful commercial optimizer which provides a free academic license. Gurobi can be interfaced with Julia using [`Gurobi.jl`](https://github.com/JuliaOpt/Gurobi.jl). Here are the steps to install Julia and Gurobi to run the program:
+Gurobi, ücretsiz akademik lisans sağlayan güçlü bir ticari optimizasyon aracıdır. Gurobi, [`Gurobi.jl`](https://github.com/JuliaOpt/Gurobi.jl) kullanılarak Julia ile arayüzlenebilir. Programı çalıştırmak için Julia ve Gurobi'yi kurma adımları şunlardır:
 
-1) Obtain a license of *Gurobi* and install Gurobi solver by following the instructions on [Gurobi's website](http://www.gurobi.com/).
+1) *Gurobi* lisansı alın ve [Gurobi'nin web sitesindeki](http://www.gurobi.com/) talimatları izleyerek Gurobi çözücüsünü kurun.
 
-2) Make sure the `GUROBI_HOME` environmental variable is set to the path of the Gurobi directory. This is part of standard installation. The Gurobi library will be searched for in `GUROBI_HOME/lib` on Unix platforms and `GUROBI_HOME\bin` on Windows. If the library is not found, check that your version is listed in `deps/build.jl`. The environmental variable can be set by appending `export GUROBI_HOME="<path>/gurobi811/linux64"` to `.bashrc` file. Replace the `<path>`, platform `linux64` and version number `811` with the values of your Gurobi installation.
+2) `GUROBI_HOME` ortam değişkeninin Gurobi dizin yoluna ayarlandığından emin olun. Bu, standart kurulumun bir parçasıdır. Gurobi kütüphanesi Unix platformlarında `GUROBI_HOME/lib` altında, Windows'ta ise `GUROBI_HOME\bin` altında aranacaktır. Kütüphane bulunamazsa, sürümünüzün `deps/build.jl` dosyasında listelendiğini kontrol edin. Ortam değişkeni, `.bashrc` dosyasına `export GUROBI_HOME="<yol>/gurobi811/linux64"` eklenerek ayarlanabilir. `<yol>`, platform `linux64` ve sürüm numarası `811`'i Gurobi kurulumunuzdaki değerlerle değiştirin.
 
-3) Install `Gurobi.jl` in Julia's package manager by running commands
+3) Aşağıdaki komutları çalıştırarak Julia paket yöneticisine `Gurobi.jl`'yi kurun:
    ```
    pkg> add Gurobi
    pkg> build Gurobi
    ```
 
 
-## Documentation
-The project documentation is created using [Documenter.jl](https://juliadocs.github.io/Documenter.jl/stable/). To build the documentation, navigate inside the `docs` directory and run the command
+## Dokümantasyon
+Proje dokümantasyonu [Documenter.jl](https://juliadocs.github.io/Documenter.jl/stable/) kullanılarak oluşturulmuştur. Dokümantasyonu derlemek için `docs` dizinine gidin ve şu komutu çalıştırın:
 ```bash
 julia make.jl
 ```
